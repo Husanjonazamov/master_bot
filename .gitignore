@@ -1,0 +1,8 @@
+venv
+.env
+**/*.pyx
+**/*.pyc
+**/*.pyi
+**/*.ipynb
+.idea
+db.sqlite3
