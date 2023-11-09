@@ -10,7 +10,7 @@ from apps.api.resource import VeterinarianResource, DeliveredResource
 # Register your models here.
 class DeliveredAdmin(ImportExportModelAdmin):
     list_display = ["user", 'first_name', 'phone', 'custom_location', "product_count", "custom_addition"]
-    search_fields = ["user", 'first_name', 'phone', 'location', "product_count", "addition"]
+    search_fields = ["user", 'first_name', 'phone', 'location', "product_count", "addition", "image"]
     resource_class = DeliveredResource
 
     def custom_addition(self, obj):

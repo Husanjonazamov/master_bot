@@ -1,11 +1,13 @@
 from pprint import pprint
 
+from django.contrib.auth import authenticate
 from telebot.types import Message
 
+from apps.accounts.models import User
 from ...bot import bot
 from ...filters import Filter
 from ...utils.user import User as BUser
-from ...keyboards import send_location, vhome, button_phone, bhome
+from ...keyboards import send_location, vhome, button_phone, bhome, markup
 from ...utils import State
 
 
@@ -14,6 +16,8 @@ def add_handler(msg: Message):
     user_id = msg.chat.id
     user = BUser.get_user(user_id)
     role = user.profile.role
+    first_name = State.get_data(user_id=user_id, key="first_name")
+    auth_user = authenticate(first_name=first_name)
     if auth_user is None:
             bot.send_message(user_id, "Bosh sahifa✅", reply_markup=markup)
             State.set_state(user_id, "home")
@@ -21,8 +25,8 @@ def add_handler(msg: Message):
             user.is_login = True
             user.profile = auth_user
             user.save()
-
-    bot.send_message(user_id, "Ism kiriting", reply_markup=bhome)
+    else:
+        bot.send_message(user_id, "Ism kiriting", reply_markup=bhome)
 
 
 

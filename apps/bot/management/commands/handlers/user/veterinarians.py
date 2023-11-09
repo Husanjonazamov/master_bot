@@ -42,7 +42,7 @@ def handler(msg: Message):
     user_id = msg.chat.id
     State.set_data(user_id, "sendf1", msg.text)
     State.set_state(user_id, "sendp1")
-    bot.send_message(user_id, "Telefon nomerni kiriting\nMisol: 943990509")
+    bot.send_message(user_id, "Mijozning telefon raqamini kiriting\nMisol: 940014741")
 
 
 @bot.message_handler(func=Filter(state="sendp1"))
@@ -51,7 +51,7 @@ def handler(msg: Message):
     text = msg.text
 
     if len(text) != 9 or not text.isdigit():
-        return bot.send_message(user_id, "Telefon nomer xato kiritildi\n\nMisol: 943990509")
+        return bot.send_message(user_id, "Telefon nomer xato kiritildi\n\nMisol: 940014741")
 
     State.set_data(user_id, "sendp1", msg.text)
     State.set_state(user_id, "sendl1")
@@ -69,7 +69,7 @@ def handler(msg: Message):
 
     State.set_data(user_id, "sendnk1", text)
     State.set_state(user_id, "sendn1")
-    bot.send_message(user_id, "Namlik")
+    bot.send_message(user_id, "Jo`jaxona namligi")
 
 
 @bot.message_handler(func=Filter(state="sendn1"))
@@ -81,7 +81,7 @@ def handler(msg: Message):
 
     State.set_data(user_id, "namlik", text)
     State.set_state(user_id, "sendt1")
-    bot.send_message(user_id, "Temperatura")
+    bot.send_message(user_id, "Jo`jaxona temperaturasi")
 
 
 @bot.message_handler(func=Filter(state="sendt1"))

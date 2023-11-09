@@ -29,7 +29,7 @@ def back_handler(msg: Message):
     user_id = msg.chat.id
     State.set_state(user_id, "home")
     bot.send_message(user_id, "Assalomu alaykum Inter broiler botimizga xush kelibsiz.", reply_markup=markup)
-#
+
 # @bot.message_handler(func=lambda msg: msg.text == "Loginni qata kiritish ↪️")
 # def back_handler(msg: Message):
 #     user_id = msg.chat.id
@@ -69,28 +69,28 @@ def back_handler(msg: Message):
 #         user.is_login = True
 #         user.profile = auth_user
 #         user.save()
-
-
-@bot.message_handler(func=Filter(text="Statistics 📊"))
-def handler(msg: Message):
-    user_id = msg.chat.id
-    user = BUser.get_user(user_id)
-    role = user.profile.role
-    count = 0
-    l = ""
-    if role == 1:
-        l = "Veterenar"
-        count = Veterinarian.objects.filter(user=user.profile).count()
-    elif role == 2:
-        l = "Yetkazib beruvchi"
-
-        count = Delivered.objects.filter(user=user.profile).count()
-
-
-    bot.send_message(user_id,
-                     "👨‍⚕️ Xodim: {}\n🧐 Lavozim: {}\n👨‍🔧 Xizmat Ko'rsatdi: {}\n📆 Qo'shilgan: {}\n📅 Oxirgi kirish: {}".format(
-                         user.profile.first_name, l, count,
-                         user.profile.date_joined, user.profile.last_login))
+#
+#
+# @bot.message_handler(func=Filter(text="Statistics 📊"))
+# def handler(msg: Message):
+#     user_id = msg.chat.id
+#     user = BUser.get_user(user_id)
+#     role = user.profile.role
+#     count = 0
+#     l = ""
+#     if role == 1:
+#         l = "Veterenar"
+#         count = Veterinarian.objects.filter(user=user.profile).count()
+#     elif role == 2:
+#         l = "Yetkazib beruvchi"
+#
+#         count = Delivered.objects.filter(user=user.profile).count()
+#
+#
+#     bot.send_message(user_id,
+#                      "👨‍⚕️ Xodim: {}\n🧐 Lavozim: {}\n👨‍🔧 Xizmat Ko'rsatdi: {}\n📆 Qo'shilgan: {}\n📅 Oxirgi kirish: {}".format(
+#                          user.profile.first_name, l, count,
+#                          user.profile.date_joined, user.profile.last_login))x
 
 @bot.message_handler(func=Filter(text="Ro`yxatdan o`tish📝"))
 def add_handler(msg: Message):
@@ -199,7 +199,6 @@ def Phone(msg: Message):
 @bot.message_handler(content_types=["photo", "video"])
 def handler(msg: Message):
     user_id = msg.chat.id
-    user_id = user_id
     user = BUser.get_user(user_id)
     state = State.get_state(user_id)
     content_type = msg.content_type
@@ -218,7 +217,6 @@ def handler(msg: Message):
     file_info = bot.get_file(file_id)
     file = bot.download_file(file_info.file_path)
     file_name = "{}_{}.{}".format(user_id, file_id, ext)
-
     file_path = os.path.join(settings.MEDIA_ROOT, 'additions', file_name)
 
     with open(file_path, 'wb') as new_file:
@@ -253,7 +251,7 @@ def handler(msg: Message):
         vet.addition = "{}{}".format('additions/', file_name)
         vet.save()
 
-        bot.send_message(user_id, "Muvofaqiyyatli qo'shildi ✅", reply_markup=vhome)
+        bot.send_message(user_id, "Muvofaqiyyatli qo'shildi ✅", reply_markup=markup)
         State.set_state(user_id, "home")
 
 
@@ -302,7 +300,7 @@ def handler(msg: Message):
         p.day = day
         p.product_count = product_count
         p.location = location
-        d.addition = "{}{}".format('additions/', file_name)
+        p.addition = "{}{}".format('additions/', file_name)
         p.save()
 
         bot.send_message(user_id, "Buyurtmangiz qabul qilndi ✅", reply_markup=markup)
@@ -319,6 +317,6 @@ def handler(msg: Message):
         r.name = name
         r.phone = number
         r.save()
-        bot.send_message(user_id, "Buyurtmangiz qabul qilndi ✅", reply_markup=markup)
-        State.set_state(user_id, "home")
+
+
 
