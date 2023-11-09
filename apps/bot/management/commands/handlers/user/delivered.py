@@ -67,7 +67,7 @@ def location(msg: Message):
 
     State.set_data(user_id, "sendl2", msg.location)
     State.set_state(user_id, "sendc2")
-    bot.send_message(user_id, "location")
+    bot.send_message(user_id, "Nechta jo`ja olib bordingiz")
 
 @bot.message_handler(func=Filter(state="sendc2"))
 def handler(msg: Message):

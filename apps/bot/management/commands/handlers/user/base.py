@@ -1,5 +1,5 @@
 import os
-
+from django.db import models
 from django.conf import settings
 from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, \
     CallbackQuery, ReplyKeyboardRemove
@@ -9,7 +9,8 @@ from ...bot import bot
 from ...keyboards import vhome, bhome, button, markup, send_delivered, back, button_phone
 from ...utils.state import State
 from ...utils.user import User as BUser
-from apps.bot.models import User
+# from apps.bot.models import User
+from apps.accounts.models import User
 from ...filters.state import Filter
 from django.contrib.auth import authenticate
 
@@ -29,105 +30,6 @@ def back_handler(msg: Message):
     user_id = msg.chat.id
     State.set_state(user_id, "home")
     bot.send_message(user_id, "Assalomu alaykum Inter broiler botimizga xush kelibsiz.", reply_markup=markup)
-
-# @bot.message_handler(func=lambda msg: msg.text == "Loginni qata kiritish ↪️")
-# def back_handler(msg: Message):
-#     user_id = msg.chat.id
-#     bot.send_message(user_id, "Loginni kiriting")
-#     State.set_state(user_id, "login")
-#
-#
-# @bot.message_handler(func=Filter(state="login"))
-# def login_handler(msg: Message):
-#     text = msg.text
-#     user_id = msg.chat.id
-#     State.set_data(user_id=user_id, key="login", value=text)
-#
-#     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-#     keyboard.add(KeyboardButton("Loginni qata kiritish ↪️"))
-#
-#     bot.send_message(user_id, "Login qabul qilindi\n\nParolni kiriting", reply_markup=keyboard)
-#     State.set_state(user_id, "password")
-#
-#
-#
-#
-# @bot.message_handler(func=Filter(state="password"))
-# def password_handler(msg: Message):
-#     user_id = msg.chat.id
-#
-#     password = msg.text
-#     username = State.get_data(user_id=user_id, key="login")
-#     auth_user = authenticate(username=username, password=password)
-#
-#     if auth_user is None:
-#         bot.send_message(user_id, "parol yoki username xato kiritildi iltimos qayta urunib ko'ring")
-#     else:
-#         bot.send_message(user_id, "Bosh sahifa✅", reply_markup=vhome)
-#         State.set_state(user_id, "home")
-#         user = User.objects.get(user_id=user_id)
-#         user.is_login = True
-#         user.profile = auth_user
-#         user.save()
-#
-#
-# @bot.message_handler(func=Filter(text="Statistics 📊"))
-# def handler(msg: Message):
-#     user_id = msg.chat.id
-#     user = BUser.get_user(user_id)
-#     role = user.profile.role
-#     count = 0
-#     l = ""
-#     if role == 1:
-#         l = "Veterenar"
-#         count = Veterinarian.objects.filter(user=user.profile).count()
-#     elif role == 2:
-#         l = "Yetkazib beruvchi"
-#
-#         count = Delivered.objects.filter(user=user.profile).count()
-#
-#
-#     bot.send_message(user_id,
-#                      "👨‍⚕️ Xodim: {}\n🧐 Lavozim: {}\n👨‍🔧 Xizmat Ko'rsatdi: {}\n📆 Qo'shilgan: {}\n📅 Oxirgi kirish: {}".format(
-#                          user.profile.first_name, l, count,
-#                          user.profile.date_joined, user.profile.last_login))x
-
-@bot.message_handler(func=Filter(text="Ro`yxatdan o`tish📝"))
-def add_handler(msg: Message):
-    user_id = msg.chat.id
-    user = BUser.get_user(user_id)
-    phone = msg.text
-    first_name = State.get_data(user_id=user_id, key="first_name")
-    auth_user = authenticate(first_name=first_name, phone=phone)
-    if auth_user is None:
-            State.set_state(user_id, "home")
-            user = User.objects.get(user_id=user_id)
-            user.is_login = True
-            user.profile = auth_user
-            user.save()
-
-
-    bot.send_message(user_id, "Ism kiriting", reply_markup=back)
-    State.set_state(user_id, "name")
-
-
-@bot.message_handler(func=Filter(text="Buyurtma berish🛒"))
-def add_handler(msg: Message):
-    user_id = msg.chat.id
-    user = BUser.get_user(user_id)
-
-
-    bot.send_message(user_id, "Ism kiriting", reply_markup=back)
-    State.set_state(user_id, "first_name")
-
-
-
-@bot.message_handler(func=Filter(text="Bekor qilish ❌"))
-def back_handler(msg: Message):
-    user_id = msg.chat.id
-    State.set_state(user_id, "home")
-    bot.send_message(user_id, "Bosh sahifa ✅", reply_markup=markup)
-
 
 
 @bot.message_handler(content_types=['location'])
@@ -162,38 +64,6 @@ def Phone(msg: Message):
         State.set_data(user_id, "number", msg.contact)
         bot.send_message(user_id, "Siz ro'yhatdan o'tdingiz ✅", reply_markup=markup)
         State.set_state(user_id, "home")
-
-
-
-# @bot.message_handler(func=Filter(text="Accountdan chiqish 🚫"))
-# def handler(msg: Message):
-#     user_id = msg.chat.id
-#
-#     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-#     keyboard.add(KeyboardButton(text="Ha ✅"),
-#                  KeyboardButton(text="Yo'q ⭕️"))
-#     State.set_state(user_id, "left_account")
-#     bot.send_message(user_id, "Rostdan ham accountdan chiqmoqchimisiz", reply_markup=keyboard)
-#
-#
-# @bot.message_handler(func=Filter(state="left_account"))
-# def handler(msg: Message):
-#     text = msg.text
-#     user_id = msg.chat.id
-#
-#     if text == "Yo'q ⭕️":
-#         bot.send_message(user_id, "Bosh Sahifa", reply_markup=vhome)
-#     elif text == "Ha ✅":
-#         user = User.objects.get(user_id=user_id)
-#         user.is_login = False
-#         user.profile = None
-#         user.save()
-#
-#         keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-#         keyboard.add(KeyboardButton("Loginni qata kiritish ↪️"))
-#
-#         bot.send_message(user_id, "Accountdan chiqdingiz ✅", reply_markup=markup)
-#         State.set_state(user_id, "login")
 
 
 @bot.message_handler(content_types=["photo", "video"])
@@ -236,21 +106,23 @@ def handler(msg: Message):
         loc.lat = location.latitude
         loc.lon = location.longitude
         loc.save()
+        
+        user = User.objects.all().first()
+        # print(user)
+        newVeterinar = Veterinarian.objects.create (
+            user = user,
+            first_name = name,
+            phone = phone,
+            location = loc,
+            day = nday,
+            moisture = namlik,
+            temperature = temprature,
+            diagnosis = Tashxis,
+            conclusion = xulosa,
+            addition = "{}{}".format('additions/', file_name)
+        )
 
-        vet = Veterinarian()
-        vet.user_id = user_id
-        vet.user = user.profile
-        vet.first_name = name
-        vet.phone = phone
-        vet.location = loc
-        vet.day = nday
-        vet.moisture = namlik
-        vet.temperature = temprature
-        vet.diagnosis = Tashxis
-        vet.conclusion = xulosa
-        vet.addition = "{}{}".format('additions/', file_name)
-        vet.save()
-
+        newVeterinar.save()
         bot.send_message(user_id, "Muvofaqiyyatli qo'shildi ✅", reply_markup=markup)
         State.set_state(user_id, "home")
 
@@ -266,18 +138,24 @@ def handler(msg: Message):
         loc.lat = location.latitude
         loc.lon = location.longitude
         loc.save()
+        
 
-        d = Delivered()
-        d.user_id = user_id
-        d.user = user.profile
-        d.first_name = name
-        d.phone = phone
-        d.location = loc
-        d.product_count = count
-        d.addition = "{}{}".format('additions/', file_name)
-        d.save()
 
-        bot.send_message(user_id, "Muvofaqiyyatli qo'shildi ✅", reply_markup=vhome)
+        user = User.objects.all().first()
+        # user = User.objects.create()
+
+        print(user)
+
+        newDelever = Delivered.objects.create (
+               user = user,
+               first_name = name,
+               phone = phone,
+               location = loc,
+               product_count = count,
+               addition = "{}{}".format('additions/', file_name)
+        )
+        newDelever.save()
+        bot.send_message(user_id, "Muvofaqiyyatli qo'shildi ✅", reply_markup=markup)
         State.set_state(user_id, "home")
 
     elif state == "first_name":
